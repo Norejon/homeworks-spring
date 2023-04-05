@@ -3,9 +3,13 @@ package com.example.homework1.controllers;
 import com.example.homework1.dao.CarDAO;
 import com.example.homework1.models.Car;
 import com.example.homework1.models.views.Views;
+import com.example.homework1.services.CarService;
+import com.example.homework1.services.MailService;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,40 +18,44 @@ import java.util.List;
 @AllArgsConstructor
 public class MainController {
 
-    private CarDAO carDAO;
+    private CarService carService;
+    private MailService mailService;
 
     @GetMapping("/cars")
     @JsonView(Views.Level13.class)
     public List<Car> getCars() {
-        return carDAO.findAll();
+        return carService.getCars();
     }
 
     @GetMapping("/cars/{id}")
     @JsonView(Views.Level11.class)
     public List<Car> getCarById(@PathVariable int id) {
-        return carDAO.findById(id);
+        return carService.getCarById(id);
     }
 
+    @SneakyThrows
     @PostMapping("/cars")
+    @ResponseStatus(HttpStatus.OK)
     public void saveCar(@RequestBody @Valid Car car) {
-        carDAO.save(car);
+        carService.saveCar(car);
+        mailService.send(car);
     }
 
     @DeleteMapping("/cars/{id}")
     public void deleteCar(@PathVariable int id) {
-        carDAO.deleteById(id);
+        carService.getCarById(id);
     }
 
     @GetMapping("/cars/power/{value}")
     @JsonView(Views.Level12.class)
     public List<Car> getCarsByPower(@PathVariable int value) {
-        return carDAO.findByPower(value);
+        return carService.getCarsByPower(value);
     }
 
     @GetMapping("/cars/producer/{value}")
     @JsonView(Views.Level12.class)
     public List<Car> getCarsByProducer(@PathVariable String value) {
-        return carDAO.findByProducer(value);
+        return carService.getCarsByProducer(value);
     }
 
 }
