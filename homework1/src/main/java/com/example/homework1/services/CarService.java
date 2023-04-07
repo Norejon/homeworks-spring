@@ -1,7 +1,9 @@
 package com.example.homework1.services;
 
 import com.example.homework1.dao.CarDAO;
+import com.example.homework1.dao.ClientUserDAO;
 import com.example.homework1.models.Car;
+import com.example.homework1.models.dto.ClientUserDTO;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,4 +41,6 @@ public class CarService {
     public List<Car> getCarsByProducer(@PathVariable String value) {
         return carDAO.findByProducer(value);
     }
+
+
 }
